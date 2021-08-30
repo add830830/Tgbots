@@ -2,7 +2,6 @@ import html
 from pokebase.loaders import generation
 from telegram.ext import *
 from telegram import *
-import botinfo
 import pokebase as pb
 import random
 import logging
@@ -34,7 +33,7 @@ def start(update, context):
     keyboard= [
     [InlineKeyboardButton("Add Pan to your group", url='http://t.me/Mr7PanBot?startgroup=true')],
     [InlineKeyboardButton("Support Group", url='https://t.me/bgmiofficial_1'),InlineKeyboardButton("Updates Channel", url='https://t.me/bgmiupdates')],
-    [InlineKeyboardButton("Source code", url='https://github.com/aditya-yadav-27')],
+    [InlineKeyboardButton("Source code", url='https://github.com/aditya-yadav-27/TgPokedexbot')],
     [InlineKeyboardButton("Help & commands", url='http://t.me/Mr7PanBot?start=help')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     user = update.message.from_user
@@ -248,7 +247,7 @@ def move(update: Update, context: CallbackContext):
 
 
 def main():
-    updater = Updater(token=botinfo.token)
+    updater = Updater(token='TOKEN)
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler('start', start))
     dispatcher.add_handler(CommandHandler('help', help))
