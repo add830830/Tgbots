@@ -4,7 +4,6 @@ import json
 import html
 from telegram.ext import *
 from telegram import *
-import botinfo
 import random
 import logging
 
@@ -50,7 +49,7 @@ def start(update, context):
     logger.info("User %s started the conversation.", user.id)
     user = (update.message.from_user['first_name'])
     master = "<a href='https://t.me/aditya_yadav_27'>Aditya</a>"
-    context.bot.send_photo(chat_id=update.effective_chat.id, photo=open('rotomdex.png', 'rb'),
+    context.bot.send_photo(chat_id=update.effective_chat.id, photo='https://cdn2.bulbagarden.net/upload/thumb/4/42/Sun_Moon_Rotom_Pok%C3%A9dex_artwork.png/300px-Sun_Moon_Rotom_Pok%C3%A9dex_artwork.png',
                            caption=f"Hey {user}, I am The most advance pokedex bot of Telegram made by my master {master}\nType /help to see what I can do!!", reply_markup=reply_markup, parse_mode=ParseMode.HTML)
 
 
@@ -320,7 +319,7 @@ def move(update: Update, context: CallbackContext):
 
 
 def main():
-    updater = Updater(token=botinfo.token)
+    updater = Updater(token='TOKEN')
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler('start', start))
     dispatcher.add_handler(CommandHandler('help', help))
