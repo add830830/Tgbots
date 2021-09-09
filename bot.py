@@ -115,7 +115,7 @@ def data(update: Update, context: CallbackContext):
         egg_groups = info1['egg_groups']
         counter = info1['hatch_counter']
         catch_rate = info1['capture_rate']
-        growth_rate=info['growth_rate']['name']
+        growth_rate=info1['growth_rate']['name']
         gen=info1['generation']['name']
         gen=gen.split('-')
         if gender_rate==0:
@@ -125,7 +125,7 @@ def data(update: Update, context: CallbackContext):
         elif gender_rate==-1:
             gender_rate1='Gender unknown'
         
-        abilities = info['abilities']
+        abl = info['abilities']
         all_types = info['types']
         name = info['name']
         id1 = info['id']
@@ -141,9 +141,9 @@ def data(update: Update, context: CallbackContext):
         for group in egg_groups:
             groups = '/'.join(f"{group['name']}".capitalize()
                               for group in egg_groups)
-        for ability in abilities:
+        for abls in abl:
             abilities = ', '.join(
-                f"{abls['ability']['name'].capitalize()}" for abls in abilities)
+                f"{abls['ability']['name'].capitalize()}" for abls in abl)
         for type in all_types:
             types = ', '.join(
                 f"{type['type']['name'].capitalize()}" for type in all_types)
@@ -161,10 +161,10 @@ def data(update: Update, context: CallbackContext):
         caption = f'''<u><b>#{id1} | {name.capitalize()} | {gen[0].capitalize()}-{gen[1].upper()}</b></u>
         <b>Types</b>
         {types}
-
+        
         <b>Abilities</b>
         {abilities}
-
+        
         <b>Gender Ratio</b>                <b>Catch Rate</b>
         {gender_rate1}                     {catch_rate}
                               
@@ -173,7 +173,7 @@ def data(update: Update, context: CallbackContext):
                                  
         <b>Height/Weight</b>               <b>Growth Rate</b>
         {height/10}m/{weight/10}kg         {growth_rate}
-
+        
         <b>Base-exp</b>                    
         {base_experience} 
                     
@@ -181,21 +181,19 @@ def data(update: Update, context: CallbackContext):
                              Total: {int(eff[0])+int(eff[1])+int(eff[2])+int(eff[3])+int(eff[4])+int(eff[5])}  
         {eff[0]}     {eff[1]}      {eff[2]}      {eff[3]}          {eff[4]}            {eff[5]}
         Hp  Atk  Def  Sp.Atk  Sp.Def  Speed
-
+        
         <b>Evolution Line</b>
         will add soon
-
+        
         <b>Other Forms</b>
         will add soon
-
 Read more about this pokemon on {bulba2}'''
 
         update.message.reply_document(
             f"https://img.pokemondb.net/artwork/{user_says.casefold()}.jpg", caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup3)
 
     except:
-        update.message.reply_text(
-            f"'{user_says}' is not a valid pokemon! try again")
+       update.message.reply_text(f"'{user_says}' is not a valid pokemon! try again")
 
 
 def randpoke(update: Update, context: CallbackContext):
@@ -323,16 +321,12 @@ def move(update: Update, context: CallbackContext):
         update.message.reply_text(f'''<b><u>{id1} | {name.capitalize()} | {generation['name'].capitalize()}</u></b>
             <b>Type</b>                        <b>Category</b>
             {type1['name'].capitalize()}       {category['name'].capitalize()}
-
             <b>Power Points</b>                <b>Base Power</b>
             {pp}                               {power}
-
             <b>Accuracy</b>                    <b>Target</b>
             {accuracy}%                        {target['name'].capitalize()}
-
             <b>Contest</b>                     <b>Priority</b>
             {contest['name'].capitalize()}     {priority}
-
             <b>Description</b>
             {entry}
             ''', parse_mode=ParseMode.HTML)
@@ -354,4 +348,3 @@ if __name__ == '__main__':
     dp.add_handler(CommandHandler('move', move))
     updater.start_polling()
     updater.idle()
-
