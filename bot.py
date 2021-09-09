@@ -6,13 +6,13 @@ from telegram import *
 import random
 import logging
 
+
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
 
 logger = logging.getLogger(__name__)
 
-# setting global vars
 
 keyboard = [
     [
@@ -36,12 +36,10 @@ reply_markup3 = InlineKeyboardMarkup(keyboard3)
 
 def start(update, context):
     keyboard = [
-        [InlineKeyboardButton("Add Pan to your group",
-                              url='http://t.me/Mr7PanBot?startgroup=true')],
+        [InlineKeyboardButton("Add Pan to your group",url='http://t.me/Mr7PanBot?startgroup=true')],
         [InlineKeyboardButton("Support Group", url='https://t.me/bgmi_pubgnewstate'),
          InlineKeyboardButton("Updates Channel", url='https://t.me/bgmi_pubgnewstate_updates')],
-        [InlineKeyboardButton(
-            "Source code", url='https://github.com/aditya-yadav-27/TgPokedexbot')],
+        [InlineKeyboardButton("Source code", url='https://github.com/aditya-yadav-27/TgPokedexbot')],
         [InlineKeyboardButton("Help & commands", url='http://t.me/Mr7PanBot?start=help')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     user = update.message.from_user
@@ -106,75 +104,96 @@ def data(update: Update, context: CallbackContext):
         response = requests.get(final_url)
         response = response.content
         info = json.loads(response)
+
         url1 = "https://pokeapi.co/api/v2/pokemon-species/{}/"
         final_url1 = url1.format(user_says.casefold())
         response1 = requests.get(final_url1)
         response1 = response1.content
         info1 = json.loads(response1)
-
         gender_rate = info1['gender_rate']
+        gender_rate1=f"{100-(100*(gender_rate/8))}% ♂️ | {100*(gender_rate/8)}% ♀️"
         egg_groups = info1['egg_groups']
         counter = info1['hatch_counter']
         catch_rate = info1['capture_rate']
+        growth_rate=info['growth_rate']['name']
         gen=info1['generation']['name']
         gen=gen.split('-')
-
-        abl = info['abilities']
+        if gender_rate==0:
+            gender_rate1='100% ♂️'
+        elif gender_rate==8:
+            gender_rate1='100% ♀️'
+        elif gender_rate==-1:
+            gender_rate1='Gender unknown'
+        
+        abilities = info['abilities']
         all_types = info['types']
         name = info['name']
         id1 = info['id']
         height = info['height']
         weight = info['weight']
         base_experience = info['base_experience']
-
+        stata=info['stats']
         groups = ''
         types = ''
         abilities = ''
+        for effort in stata:
+            eff=', '.join(f"{effort['effort']}" for effort in stata)
         for group in egg_groups:
             groups = '/'.join(f"{group['name']}".capitalize()
                               for group in egg_groups)
-        for abls in abl:
+        for ability in abilities:
             abilities = ', '.join(
-                f"{abls['ability']['name'].capitalize()}" for abls in abl)
+                f"{abls['ability']['name'].capitalize()}" for abls in abilities)
         for type in all_types:
             types = ', '.join(
                 f"{type['type']['name'].capitalize()}" for type in all_types)
+        if '-' in growth_rate:
+            growth_rate=growth_rate.split('-')
+            growth_rate=f"{growth_rate[0].capitalize()} {growth_rate[1]}"
+        else:
+            growth_rate=growth_rate
+        eff=eff.split(', ')
         proper = user_says.split('-')
         proper1 = proper[0]
         bulba_link = f'https://bulbapedia.bulbagarden.net/wiki/{proper1.capitalize()}_(Pok%C3%A9mon)'
         bulba2 = f"<a href='{bulba_link}'>Bulbapedia</a>"
 
         caption = f'''<u><b>#{id1} | {name.capitalize()} | {gen[0].capitalize()}-{gen[1].upper()}</b></u>
-            <b>Types</b>
-            {types}
+        <b>Types</b>
+        {types}
 
-            <b>Abilities</b>
-            {abilities}
+        <b>Abilities</b>
+        {abilities}
 
-            <b>Gender Ratio</b>                <b>Catch Rate</b>
-            {gender_rate}/8                    {catch_rate}
+        <b>Gender Ratio</b>                <b>Catch Rate</b>
+        {gender_rate1}                     {catch_rate}
                               
-            <b>Egg groups</b>                  <b>Hatch Time</b>
-            {groups}                           {255*(counter+1)}
+        <b>Egg groups</b>                  <b>Hatch Time</b>
+        {groups}                           {255*(counter+1)} steps
                                  
-            <b>Height/Weight</b>
-            {height/10}m/{weight/10}kg
+        <b>Height/Weight</b>               <b>Growth Rate</b>
+        {height/10}m/{weight/10}kg         {growth_rate}
 
-            <b>Base-exp</b>                    
-            {base_experience} 
-                            
-            <b>Evolution Line</b>
-            
+        <b>Base-exp</b>                    
+        {base_experience} 
+                    
+                             <b>EV yield</b>
+                             Total: {int(eff[0])+int(eff[1])+int(eff[2])+int(eff[3])+int(eff[4])+int(eff[5])}  
+        {eff[0]}     {eff[1]}      {eff[2]}      {eff[3]}          {eff[4]}            {eff[5]}
+        Hp  Atk  Def  Sp.Atk  Sp.Def  Speed
 
-            <b>Other Forms</b>
-            will add soon
+        <b>Evolution Line</b>
+        will add soon
+
+        <b>Other Forms</b>
+        will add soon
 
 Read more about this pokemon on {bulba2}'''
 
         update.message.reply_document(
             f"https://img.pokemondb.net/artwork/{user_says.casefold()}.jpg", caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup3)
 
-    except Exception as e:
+    except:
         update.message.reply_text(
             f"'{user_says}' is not a valid pokemon! try again")
 
@@ -234,7 +253,7 @@ def stats(update: Update, context: CallbackContext):
         poke_name = str(poke_name).capitalize()
         poke_id = info['id']
         stata = info['stats']
-        eff=''
+        
         name = ''
         base_stat = ''
         for details in stata:
@@ -243,9 +262,8 @@ def stats(update: Update, context: CallbackContext):
         for details1 in stata:
             name = ', '.join(
                 f"{details1['stat']['name']}"for details1 in stata)
-        for effort in stata:
-            eff=', '.join(f"{effort['effort']}" for effort in stata)
-        eff=eff.split(', ')
+
+        
         name = name.split(', ')
         base_stat = base_stat.split(', ')
         update.message.reply_text(f'''<b><u>#{poke_id} | {poke_name}</u></b>
@@ -260,9 +278,9 @@ def stats(update: Update, context: CallbackContext):
         <b>Total: {int(base_stat[0])+int(base_stat[1])+int(base_stat[2])+int(base_stat[3])+int(base_stat[4])+int(base_stat[5])}</b>
             ''', parse_mode=ParseMode.HTML)
 
-    except Exception as e:
+    except:
         context.bot.send_message(
-            chat_id=update.effective_chat.id, text=f'"{user_says}" is not a valid pokemon! try again {e}')
+            chat_id=update.effective_chat.id, text=f'{user_says} is not a valid pokemon! try again')
 
 
 def move(update: Update, context: CallbackContext):
@@ -301,7 +319,7 @@ def move(update: Update, context: CallbackContext):
             entry = entry.replace(ec, f'{effect_chance}%')
         else:
             pass
-            # formating data
+            
         update.message.reply_text(f'''<b><u>{id1} | {name.capitalize()} | {generation['name'].capitalize()}</u></b>
             <b>Type</b>                        <b>Category</b>
             {type1['name'].capitalize()}       {category['name'].capitalize()}
@@ -322,7 +340,6 @@ def move(update: Update, context: CallbackContext):
     except:
         context.bot.send_message(
             chat_id=update.effective_chat.id, text=f'{user_says} is not a valid move try again')
-
 
 if __name__ == '__main__':
     updater = Updater(token='TOKEN')
