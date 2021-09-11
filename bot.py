@@ -288,6 +288,8 @@ def move(update: Update, context: CallbackContext):
         f"User %s used move command for move/pokemon {user_says}", user.id)
 
     try:
+        if ' ' in user_says:
+            user_says=user_says.replace(' ', '-')
         context.bot.send_chat_action(
             chat_id=update.effective_chat.id, action='typing')
         url = "https://pokeapi.co/api/v2/move/{}/"
@@ -327,13 +329,36 @@ def move(update: Update, context: CallbackContext):
             {accuracy}%                        {target['name'].capitalize()}
             <b>Contest</b>                     <b>Priority</b>
             {contest['name'].capitalize()}     {priority}
-            <b>Description</b>
-            {entry}
+<b>Description</b>
+{entry}
             ''', parse_mode=ParseMode.HTML)
 
     except:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id, text=f'{user_says} is not a valid move try again')
+        try:
+            url = "https://pokeapi.co/api/v2/pokemon/{}/"
+            final_url = url.format(user_says.casefold())
+            response = requests.get(final_url)
+            response = response.content
+            info = json.loads(response)
+            
+            url1 = "https://pokeapi.co/api/v2/pokemon-species/{}/"
+            final_url1 = url1.format(user_says.casefold())
+            response1 = requests.get(final_url1)
+            response1 = response1.content
+            info1 = json.loads(response1)
+        
+            moves=info['moves']
+            id1 = info['id']
+            name = info['name']
+            generation = info1['generation']
+            for move in moves:
+                moves1=', '.join(f"{move['move']['name'].capitalize()}"for move in moves)
+                moves1=moves1.replace('-', ' ')
+            update.message.reply_text(f'''<b><u>{id1} | {name.capitalize()} | {generation['name'].capitalize()}</u></b>
+Moves {user_says} can learn:
+{moves1}''', parse_mode=ParseMode.HTML)
+        except:
+            context.bot.send_message(chat_id=update.effective_chat.id, text=f"{user_says} is not a valid pokemon or move try again!")
 
 if __name__ == '__main__':
     updater = Updater(token='TOKEN')
