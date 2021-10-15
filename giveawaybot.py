@@ -1,6 +1,6 @@
 from telegram import *
 from telegram.ext import *
-import telegram, telegram.ext, logging, datetime, html, uuid
+import telegram, telegram.ext, random, logging, datetime, asyncio, html, uuid
 
 
 
@@ -43,12 +43,13 @@ def button(update: Update, context: CallbackContext):
     choice = query.data
     if choice=='1':
         members=context.bot.get_chat_member(chat_id=update.effective_chat.id, user_id=update.callback_query.from_user.id)
-        if members.status==telegram.ChatMemberAdministrator or telegram.ChatMemberOwner or telegram.ChatMemberMember or telegram.ChatMemberRestricted:
+        member=['administrator', 'creator', 'member', 'restricted']
+        if members.status in member:
             users.append(update.callback_query.from_user.id)
             update.callback_query.answer(text='Prticipation successful!', show_alert=True)
         else:
-            update.callback_query.answer(text='Join the group to participate', show_alert=True)
-        print(members.status)
+            update.callback_query.answer(text='Join the channel to participate', show_alert=True)
+        
 
 
 #giveaway start
