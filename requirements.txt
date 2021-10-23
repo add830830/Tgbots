@@ -4,4 +4,4 @@ streamlit
 flask
 python-telegram-bot
 telegram
-
+asyncio
