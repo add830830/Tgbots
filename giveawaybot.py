@@ -1,13 +1,13 @@
 from telegram import *
 from telegram.ext import *
 import telegram, telegram.ext, random, logging, datetime, asyncio, html, uuid
-
+import streamlit as st 
 
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
-u = Updater('TOKEN', use_context=True)
+u = Updater(st.secrets["token"], use_context=True)
 
 #setting vars
 j = u.job_queue
