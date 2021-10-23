@@ -5,7 +5,7 @@ from telegram.ext import *
 from telegram import *
 import random
 import logging
-
+import streamlit as st 
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
@@ -361,7 +361,7 @@ Moves {user_says} can learn:
             context.bot.send_message(chat_id=update.effective_chat.id, text=f"{user_says} is not a valid pokemon or move try again!")
 
 if __name__ == '__main__':
-    updater = Updater(token='TOKEN')
+    updater = Updater(st.secrets["token"])
     dp = updater.dispatcher
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CommandHandler('help', help))
