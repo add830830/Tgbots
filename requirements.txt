@@ -1,0 +1,7 @@
+html
+requests
+streamlit
+flask
+python-telegram-bot
+telegram
+
